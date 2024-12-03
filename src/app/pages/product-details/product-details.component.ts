@@ -1,39 +1,35 @@
-import { NgFor, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { ProductService } from './services/product.service';
-import { ProductListComponent } from '../../components/product-list/product-list.component';
-import { RouterModule } from '@angular/router';
+import { ProductService } from '../our-products/services/product.service';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { NgFor, NgIf } from '@angular/common';
 import { CheckoutModalComponent } from '../../components/checkout-modal/checkout-modal.component';
 
 @Component({
-  selector: 'app-our-products',
-  templateUrl: './our-products.component.html',
-  styleUrls: ['./our-products.component.scss'],
-  imports: [
-    NgFor,
-    NgIf,
-    RouterModule,
-    ProductListComponent,
-    CheckoutModalComponent,
-  ],
-  standalone: true,
+  selector: 'app-product-details',
+  imports: [NgIf, NgFor, RouterLink, CheckoutModalComponent],
+  templateUrl: './product-details.component.html',
+  styleUrl: './product-details.component.scss',
 })
-export class OurProductsComponent implements OnInit {
-  products: any[] = [];
-  cartItemsCount: number = 0;
-  cart: any[] = [];
+export class ProductDetailsComponent implements OnInit {
+  product: any;
   cartOpen = false;
+  cart: any[] = [];
   isCheckoutModalOpen = false;
+  isDropdownOpen = false;
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private route: ActivatedRoute,
+    private productService: ProductService
+  ) {}
 
   ngOnInit(): void {
-    this.products = this.productService.getProducts();
+    const productId = this.route.snapshot.paramMap.get('id');
+    this.product = this.productService.getProductById(Number(productId));
     this.cart = this.productService.getCart();
   }
 
-  addToCart(product: any[]) {
-    this.cart = this.productService.addToCart(product) as any[];
+  addToCart(): void {
+    this.cart = this.productService.addToCart(this.product) || [];
   }
 
   removeFromCart(product: any) {
@@ -64,8 +60,6 @@ export class OurProductsComponent implements OnInit {
     this.cart = [];
     this.closeCheckoutModal();
   }
-
-  isDropdownOpen = false;
 
   toggleDropdown(): void {
     this.isDropdownOpen = !this.isDropdownOpen;

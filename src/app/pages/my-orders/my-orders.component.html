@@ -1,0 +1,85 @@
+<header class="header">
+    <div class="logo">
+        <span>Coffee Shop</span>
+        <h2>AromaVault</h2>
+    </div>
+    <nav class="nav-links">
+        <a routerLink="/home" routerLinkActive="active">Home</a>
+        <a routerLink="/our-products" routerLinkActive="active">Shop</a>
+        <a routerLink="/about" routerLinkActive="active">About</a>
+        <a routerLink="/contact-us" routerLinkActive="active">Contact</a>
+        <button class="cart-btn" (click)="toggleCart()">
+            <div class="count">
+                {{ cart.length }}
+            </div>
+            🛒 Cart
+        </button>
+    </nav>
+    <div class="user-menu" (click)="toggleDropdown()">
+        <img src="https://avatar.iran.liara.run/public/girl" alt="User Avatar" class="avatar" />
+        <div class="user-info">
+            <p class="name">Nada Jaouadi</p>
+            <p class="username">
+                nada_jaouadi
+            </p>
+        </div>
+        <div class="dropdown">
+            ⋮
+            <ul [class.show]="isDropdownOpen">
+                <li>
+                    <a routerLink="/profile">
+                        <i class="fas fa-user"></i>
+                        Profile
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/order-history">
+                        <i class="fas fa-shopping-bag"></i>
+                        Order History
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+
+<div class="orders-history-container">
+    <div class="order-history-header">
+        <h2>My Orders</h2>
+        <button class="btn-clear" (click)="clearOrders()">
+            <i class="fas fa-trash"></i> &nbsp;
+            Clear Orders
+        </button>
+    </div>
+    <div *ngIf="orders.length > 0; else noOrdersTemplate">
+        <div class="order-card" *ngFor="let order of orders">
+            <div class="order-header">
+                <span>Order ID: {{ order.id }}</span>
+                <span class="order-date">{{ order.date | date: 'mediumDate' }}</span>
+            </div>
+            <div class="order-items">
+                <div class="order-item" *ngFor="let item of order.items">
+                    <img [src]="item.image" [alt]="item.name" />
+                    <div class="item-details">
+                        <h4>{{ item.name }}</h4>
+                        <p>Quantity: {{ item.quantity }}</p>
+                        <p>Price: ${{ item.price }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="order-footer">
+                <span>Total: ${{ order.total }}</span>
+            </div>
+        </div>
+    </div>
+
+    <ng-template #noOrdersTemplate>
+        <p class="no-orders-message">You have no orders yet.</p>
+    </ng-template>
+</div>

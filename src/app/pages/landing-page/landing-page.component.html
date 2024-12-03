@@ -8,16 +8,16 @@
       <div class="nav-menu">
         <ul>
           <li>
-            <a routerLink="/login"> Home </a>
+            <a routerLink="/home" routerLinkActive="active"> Home </a>
           </li>
           <li>
-            <a routerLink="/login"> About us </a>
+            <a routerLink="/our-products" routerLinkActive="active"> Shop </a>
           </li>
           <li>
-            <a routerLink="/login"> Our Products </a>
+            <a routerLink="/about" routerLinkActive="active"> About us </a>
           </li>
           <li>
-            <a routerLink="/login"> Contact Us </a>
+            <a routerLink="/contact-us" routerLinkActive="active"> Contact Us </a>
           </li>
         </ul>
       </div>
@@ -29,7 +29,7 @@
         <a routerLink="login">
           <i class="fa-solid fa-user"></i>
         </a>
-        <a routerLink="cart">
+        <a routerLink="cart" (click)="toggleCart()">
           <i class="fa-solid fa-cart-shopping"></i>
         </a>
       </div>
@@ -48,8 +48,14 @@
   </div>
 
   <div class="about-us-section">
-    <div class="why-us">
+    <div class="section-header">
       <h2>Why to choose us ?</h2>
+      <p>
+        Discover the ultimate coffee experience with our curated selection of
+        premium beans, brewing equipment, and accessories.
+      </p>
+    </div>
+    <div class="why-us">
       <div class="why-us-items">
         <div class="why-us-item">
           <h3>Premium Quality, Guaranteed</h3>
@@ -78,4 +84,101 @@
       </div>
     </div>
   </div>
+
+  <div class="products-section">
+    <div class="section-header">
+      <h2>Our Premium Selection</h2>
+      <p>Explore our carefully curated coffee collection</p>
+    </div>
+    <div class="products-grid">
+      <div *ngFor="let product of products" class="product-card" [@cardHover]="'idle'"
+        (mouseenter)="product.hover = true" (mouseleave)="product.hover = false">
+        <div class="product-image">
+          <img [src]="product.image" [alt]="product.name">
+          <div class="product-overlay" *ngIf="product.hover">
+            <button class="add-to-cart-btn">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-details">
+          <h3>{{ product.name }}</h3>
+          <p>{{ product.description }}</p>
+          <div class="product-price">${{ product.price.toFixed(2) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="services-section">
+    <div class="section-header">
+      <h2>Our Specialized Services</h2>
+      <p>Elevating your coffee experience</p>
+    </div>
+    <div class="services-grid">
+      <div *ngFor="let service of services" class="service-card">
+        <div class="service-icon">
+          <i [class]="service.icon"></i>
+        </div>
+        <h3>{{ service.title }}</h3>
+        <p>{{ service.description }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="testimonials-section">
+    <div class="section-header">
+      <h2>What Our Coffee Lovers Say</h2>
+    </div>
+    <div class="testimonials-slider">
+      <div *ngFor="let testimonial of testimonials" class="testimonial-card">
+        <div class="testimonial-quote">
+          <p>"{{ testimonial.quote }}"</p>
+        </div>
+        <div class="testimonial-author">
+          <img [src]="testimonial.avatar" [alt]="testimonial.name">
+          <span>{{ testimonial.name }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="how-to-use-section">
+    <div class="section-header">
+      <h2>How to Craft Your Perfect Cup</h2>
+      <p>A simple guide to brewing excellence</p>
+    </div>
+    <div class="use-steps-grid">
+      <div *ngFor="let step of useSteps; let i = index" class="use-step">
+        <div class="step-number">{{ i + 1 }}</div>
+        <div class="step-icon">
+          <i [class]="step.icon"></i>
+        </div>
+        <h3>{{ step.title }}</h3>
+        <p>{{ step.description }}</p>
+      </div>
+    </div>
+  </div>
 </div>
+
+
+<div class="cart-sidebar" [class.open]="cartOpen">
+  <h2>Your Cart</h2>
+  <button class="close-btn" (click)="toggleCart()">Close</button>
+  <div *ngIf="cart.length === 0" class="empty-cart">Your cart is empty</div>
+  <div *ngFor="let item of cart" class="cart-item">
+    <img [src]="item.image" [alt]="item.name" />
+    <div class="item-details">
+      <h4>{{ item.name }}</h4>
+      <p>${{ item.price }} x {{ item.quantity }}</p>
+      <button (click)="removeFromCart(item)">Remove</button>
+    </div>
+  </div>
+  <div class="cart-total">
+    <h3>Total: ${{ calculateTotal() }}</h3>
+    <button class="checkout-btn" (click)="openCheckoutModal()" [disabled]="cart.length === 0">
+      Checkout
+    </button>
+  </div>
+</div>
+
+<app-checkout-modal *ngIf="isCheckoutModalOpen" [cart]="cart" [total]="calculateTotal()"
+  (closeModal)="closeCheckoutModal()" (confirmOrder)="confirmOrder($event)"></app-checkout-modal>

@@ -1,0 +1,165 @@
+<header class="header">
+    <div class="logo">
+        <span>Coffee Shop</span>
+        <h2>AromaVault</h2>
+    </div>
+    <nav class="nav-links">
+        <a routerLink="/home" routerLinkActive="active">Home</a>
+        <a routerLink="/our-products" routerLinkActive="active">Shop</a>
+        <a routerLink="/about" routerLinkActive="active">About</a>
+        <a routerLink="/contact-us" routerLinkActive="active">Contact</a>
+        <button class="cart-btn" (click)="toggleCart()">
+            <div class="count">
+                {{ cart.length }}
+            </div>
+            🛒 Cart
+        </button>
+    </nav>
+    <div class="user-menu" (click)="toggleDropdown()">
+        <img src="https://avatar.iran.liara.run/public/girl" alt="User Avatar" class="avatar" />
+        <div class="user-info">
+            <p class="name">Nada Jaouadi</p>
+            <p class="username">
+                nada_jaouadi
+            </p>
+        </div>
+        <div class="dropdown">
+            ⋮
+            <ul [class.show]="isDropdownOpen">
+                <li>
+                    <a routerLink="/profile">
+                        <i class="fas fa-user"></i>
+                        Profile
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/order-history">
+                        <i class="fas fa-shopping-bag"></i>
+                        Order History
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</header>
+<div class="about-page">
+    <div class="about-hero">
+        <div class="hero-overlay">
+            <h1>Our Story, Our Passion</h1>
+            <p>Brewing excellence since 2024</p>
+        </div>
+    </div>
+
+    <div class="our-journey-section">
+        <div class="container">
+            <div class="journey-content">
+                <div class="journey-text">
+                    <h2>From Small Roastery to Global Passion</h2>
+                    <p>AromaVault began in a small garage in Tunis, with a simple dream: to bring the world's finest
+                        coffee to every home. What started as a passion project has grown into a mission to connect
+                        coffee lovers with exceptional, ethically sourced beans from around the globe.</p>
+                    <p>Our founder, Sarah Ahmed, traveled through coffee-growing regions, building direct relationships
+                        with farmers and understanding the intricate art of coffee production. Today, we're not just a
+                        coffee shop – we're a community of coffee enthusiasts committed to quality, sustainability, and
+                        taste.</p>
+                </div>
+                <div class="journey-image">
+                    <img src="assets/bean-cup.svg" alt="AromaVault Journey">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="our-values-section">
+        <div class="container">
+            <h2>Our Core Values</h2>
+            <div class="values-grid">
+                <div *ngFor="let value of companyValues" class="value-card">
+                    <div class="value-icon">
+                        <i [class]="value.icon"></i>
+                    </div>
+                    <h3>{{ value.title }}</h3>
+                    <p>{{ value.description }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="our-team-section">
+        <div class="container">
+            <h2>Meet Our Passionate Team</h2>
+            <div class="team-grid">
+                <div *ngFor="let member of teamMembers" class="team-member">
+                    <div class="member-image">
+                        <img [src]="member.image" [alt]="member.name">
+                        <div class="social-links">
+                            <a *ngIf="member.socialLinks.linkedin" [href]="member.socialLinks.linkedin" target="_blank">
+                                <i class="fab fa-linkedin"></i>
+                            </a>
+                            <a *ngIf="member.socialLinks.instagram" [href]="member.socialLinks.instagram"
+                                target="_blank">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a *ngIf="member.socialLinks.twitter" [href]="member.socialLinks.twitter" target="_blank">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="member-details">
+                        <h3>{{ member.name }}</h3>
+                        <p class="role">{{ member.role }}</p>
+                        <p class="bio">{{ member.bio }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mission-section">
+        <div class="container">
+            <div class="mission-content">
+                <h2>Our Mission</h2>
+                <blockquote>
+                    "To transform every coffee moment into an extraordinary experience by delivering unparalleled
+                    quality, supporting sustainable farming, and connecting coffee lovers worldwide."
+                </blockquote>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="cart-sidebar" [class.open]="cartOpen">
+    <div class="cart-sidebar-header">
+        <h2>Your Cart</h2>
+        <button class="close-btn" (click)="toggleCart()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    <div *ngIf="cart.length === 0" class="empty-cart">Your cart is empty</div>
+    <div *ngFor="let item of cart" class="cart-item">
+        <img [src]="item.image" [alt]="item.name" />
+        <div class="item-details">
+            <h4>{{ item.name }}</h4>
+            <p>${{ item.price }} x {{ item.quantity }}</p>
+            <button (click)="removeFromCart(item)">Remove</button>
+        </div>
+    </div>
+    <div class="cart-total">
+        <h3>Total: ${{ calculateTotal() }}</h3>
+        <button class="checkout-btn" (click)="openCheckoutModal()" [disabled]="cart.length === 0">
+            Checkout
+        </button>
+    </div>
+</div>
+
+
+<app-checkout-modal *ngIf="isCheckoutModalOpen" [cart]="cart" [total]="calculateTotal()"
+    (closeModal)="closeCheckoutModal()" (confirmOrder)="confirmOrder($event)"></app-checkout-modal>

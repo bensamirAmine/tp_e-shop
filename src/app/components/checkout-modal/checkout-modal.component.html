@@ -1,0 +1,53 @@
+<div class="checkout-modal-overlay" (click)="closeCheckoutModal()">
+    <div class="checkout-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Complete Your Order</h2>
+            <button class="close-btn" (click)="closeCheckoutModal()">×</button>
+        </div>
+
+        <div class="modal-content">
+            <div class="order-summary">
+                <h3>Order Summary</h3>
+                <div *ngFor="let item of cart" class="summary-item">
+                    <img [src]="item.image" [alt]="item.name">
+                    <div class="item-details">
+                        <span>{{ item.name }}</span>
+                        <span>${{ item.price.toFixed(2) }}</span>
+                    </div>
+                </div>
+                <div class="total">
+                    <strong>Total:</strong>
+                    <span>${{ total.toFixed(2) }}</span>
+                </div>
+            </div>
+
+            <form class="checkout-form" (ngSubmit)="submitOrder()">
+                <div class="form-section">
+                    <h3>Personal Information</h3>
+                    <input type="text" [(ngModel)]="name" name="name" placeholder="Full Name" required>
+                    <input type="email" [(ngModel)]="email" name="email" placeholder="Email Address" required>
+                </div>
+
+                <div class="form-section">
+                    <h3>Shipping Address</h3>
+                    <input type="text" [(ngModel)]="address" name="address" placeholder="Shipping Address" required>
+                </div>
+
+                <div class="form-section">
+                    <h3>Payment Details</h3>
+                    <input type="text" [(ngModel)]="cardNumber" (ngModelChange)="cardNumber = formatCardNumber($event)"
+                        name="cardNumber" placeholder="Card Number" maxlength="19" required>
+                    <div class="card-details">
+                        <input type="text" [(ngModel)]="expiryDate" name="expiryDate" placeholder="MM/YY" maxlength="5"
+                            required>
+                        <input type="text" [(ngModel)]="cvv" name="cvv" placeholder="CVV" maxlength="3" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="place-order-btn" [disabled]="isProcessing">
+                    {{ isProcessing ? 'Processing...' : 'Place Order' }}
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

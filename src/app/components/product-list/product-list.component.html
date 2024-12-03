@@ -1,0 +1,52 @@
+<div class="product-page">
+    <div class="container">
+        <div class="filters">
+            <input type="text" placeholder="Search coffees..." [(ngModel)]="searchQuery" (input)="applyFilters()" />
+            <select [(ngModel)]="sortOption" (change)="applyFilters()">
+                <option value="name-asc">Sort by Name (A-Z)</option>
+                <option value="name-desc">Sort by Name (Z-A)</option>
+                <option value="price-asc">Sort by Price (Low to High)</option>
+                <option value="price-desc">Sort by Price (High to Low)</option>
+            </select>
+            <select [(ngModel)]="selectedCategory" (change)="applyFilters()">
+                <option value="all">All Roast Types</option>
+                <option value="Light Roast">Light Roast</option>
+                <option value="Medium Roast">Medium Roast</option>
+                <option value="Dark Roast">Dark Roast</option>
+            </select>
+            <span>Price: $0 - ${{ selectedPrice }}</span>
+            <input type="range" [(ngModel)]="selectedPrice" [min]="0" [max]="priceRange[1]" (change)="applyFilters()" />
+        </div>
+
+        <div class="row">
+            <div class="col-md-3 col-sm-12 mb-3" *ngFor="let product of filteredProducts">
+                <div class="product-card">
+                    <img (click)="navigateToProduct(product)" [src]="product.image" [alt]="product.name" />
+                    <div class="about-coffee">
+                        <div class="info" (click)="navigateToProduct(product)">
+                            <h3>{{ product.name }}</h3>
+                            <p>Origin: {{ product.origin }}</p>
+                            <p>Roast: {{ product.category }}</p>
+                        </div>
+                        <div class="price">
+                            <p>${{ product.price }}</p>
+                        </div>
+                    </div>
+                    <p>{{ product.description }}</p>
+
+                    <button (click)="toggleFavorite(product.id)">
+                        {{ isFavorite(product.id) ? '❤️ Remove' : '🤍 Add' }}
+                    </button>
+                    &nbsp;
+                    <button (click)="addToCart(product)">
+                        🛒 Add to Cart
+                    </button>
+                </div>
+            </div>
+            <div *ngIf="filteredProducts.length === 0" class="no-results">
+                <h2>No coffees found</h2>
+                <p>Try adjusting your filters or searching for a different coffee.</p>
+            </div>
+        </div>
+    </div>
+</div>
